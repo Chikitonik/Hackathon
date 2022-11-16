@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Alarm clock</title>
+  </head>
+  <body>
+    <form action="">
+      <label for="countMinutes">Alarm in</label>
+      <input
+        type="number"
+        name="countMinutes"
+        id="countMinutes"
+        value="1"
+        min="1"
+        max="1439"
+      />
+      min
+      <!-- onclick doesn't work in extension -->
+      <input type="submit" value="Set" id="setAlarm" />
+    </form>
+    <br />
+    <div id="alarmsList"></div>
+    <script src="script.js" type="module"></script>
+    <script src="background.js"></script>
+  </body>
+</html>
