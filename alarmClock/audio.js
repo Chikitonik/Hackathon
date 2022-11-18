@@ -5,5 +5,5 @@ onload = () => {
   let audio = new Audio(urlParams.get("src"));
   audio.volume = urlParams.get("volume");
   audio.play();
-  setTimeout(close, urlParams.get("length"));
+  setTimeout(close, urlParams.get("duration"));
 };

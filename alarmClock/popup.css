@@ -1,5 +1,6 @@
 body {
-    width: 180px;
+    width: 210px;
+    background-color: #f7f4f4;
   }
 #countMinutes {
   width:50px;
@@ -11,10 +12,14 @@ body {
   flex-direction: row;
   margin-left: 5px;
 }
-#alarmsList span {
-  margin-left: 10px;
-  color: transparent;
+#alarmsList div:hover {
+  text-decoration: line-through;
 }
-#alarmsList div:hover > span{
-  color: red;
+#settingsCaption {
+  text-align: center;
+  cursor: pointer;
+  color: grey;
+}
+#countPeriod, #timesPeriod {
+  width: 30px;
 }

@@ -8,7 +8,7 @@
     <title>Alarm clock</title>
   </head>
   <body>
-    <form action="">
+    <form id="showCountMinutesForm">
       <label for="countMinutes">Alarm in</label>
       <input
         type="number"
@@ -20,11 +20,81 @@
       />
       min
       <!-- onclick doesn't work in extension -->
-      <input type="submit" value="Set" id="setAlarm" />
+      <input type="submit" value="set" id="setAlarm" />
     </form>
-    <br />
+
+    <form id="showCertainTimeForm">
+      <label for="certainTime">Alarm at</label>
+      <input type="time" name="certainTime" id="certainTime" />&nbsp;&nbsp;
+      <input type="submit" value="set" id="setTimeAlarm" />
+    </form>
+    <form id="showPeriodForm">
+      <label for="countPeriod">every</label>
+      <input
+        type="number"
+        name="countPeriod"
+        id="countPeriod"
+        value="1"
+        min="1"
+        max="99"
+      />
+      min,
+      <input
+        type="number"
+        name="timesPeriod"
+        id="timesPeriod"
+        value="1"
+        min="1"
+        max="99"
+      />
+      times
+      <input type="submit" value="set" id="setPeriodAlarm" />
+    </form>
+    <details id="settings">
+      <summary id="settingsCaption">settings</summary>
+      <label for="volume">volume&nbsp;&nbsp;&nbsp;</label>
+      <input
+        type="range"
+        name="volume"
+        id="volume"
+        value="10"
+        min="0"
+        max="10"
+      />
+      <label for="duration">duration&nbsp;</label>
+      <input
+        type="range"
+        name="duration"
+        id="duration"
+        value="3"
+        min="0"
+        max="10"
+      />
+      <br />
+      <label for="sound">sound&emsp;&nbsp;&nbsp;</label>
+      <select id="sound" name="sound">
+        <option value="ship.mp3" selected>ship</option>
+        <option value="bell.mp3">bell</option>
+        <option value="fastPitch.mp3">fastPitch</option>
+        <option value="helicopter.mp3">helicopter</option>
+        <option value="morse.mp3">morse</option>
+        <option value="parrot.mp3">parrot</option>
+        <option value="phoneRing.mp3">phoneRing</option>
+        <option value="thunder.mp3">thunder</option>
+        <option value="tiger.mp3">tiger</option>
+      </select>
+      <button id="test">test</button>
+      <form>
+        show alarm
+        <input type="checkbox" id="showCountMinutes" name="showCountMinutes" />
+        <label for="showCountMinutes">in</label>
+        <input type="checkbox" id="showCertainTime" name="showCertainTime" />
+        <label for="showCertainTime">at</label>
+        <input type="checkbox" id="showPeriod" name="showPeriod" />
+        <label for="showPeriod">per</label>
+      </form>
+    </details>
     <div id="alarmsList"></div>
     <script src="script.js" type="module"></script>
-    <script src="background.js"></script>
   </body>
 </html>
