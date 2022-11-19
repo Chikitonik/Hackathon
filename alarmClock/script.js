@@ -1,3 +1,4 @@
+chrome.action.setBadgeBackgroundColor({ color: "#b5daba" });
 //// only addEventListener works in extension (not in html) ////
 const alarmsList = document.getElementById("alarmsList");
 addAllAlarmsToHTML();
@@ -48,6 +49,13 @@ function getSound() {
   soundSelected = sound.value;
   localStorage.setItem("soundSelected", soundSelected);
 }
+// alarmDescription
+const alarmDescription = document.getElementById("alarmDescription");
+alarmDescription.addEventListener("keydown", (event) => {
+  if (event.key == "Enter") {
+    event.preventDefault();
+  }
+});
 // show
 // show alert in
 const showCountMinutesForm = document.getElementById("showCountMinutesForm");
@@ -92,6 +100,24 @@ function showPeriodCheck() {
     : (showPeriodForm.style.display = "none");
   localStorage.setItem("showPeriodCheck", showPeriod.checked);
 }
+// show text
+const showAlarmDescriptionForm = document.getElementById(
+  "showAlarmDescriptionForm"
+);
+const showAlarmDescription = document.getElementById("showAlarmDescription");
+showAlarmDescription.checked =
+  localStorage.getItem("showAlarmDescriptionCheck") === "true";
+showAlarmDescriptionCheck();
+showAlarmDescription.addEventListener("change", showAlarmDescriptionCheck);
+function showAlarmDescriptionCheck() {
+  showAlarmDescription.checked
+    ? (showAlarmDescriptionForm.style.display = "block")
+    : (showAlarmDescriptionForm.style.display = "none");
+  localStorage.setItem(
+    "showAlarmDescriptionCheck",
+    showAlarmDescription.checked
+  );
+}
 // #endregion settings
 // alarm name with data
 function setAlarmName(AlarmTimeString, countTimes = 1) {
@@ -101,12 +127,29 @@ function setAlarmName(AlarmTimeString, countTimes = 1) {
   alarmName.append("src", `sounds\\${soundSelected}`);
   alarmName.append("duration", durationValue);
   alarmName.append("countTimes", countTimes);
+  alarmName.append("description", alarmDescription.value);
   // console.log("alarmName.toString() :>> ", alarmName.toString());
   return alarmName.toString();
 }
+// alarm clear
+async function alarmClear(e) {
+  const AlarmTimeString = e.currentTarget.id;
+  chrome.alarms.clear(AlarmTimeString);
+  document.getElementById(AlarmTimeString).remove();
+  const chromeAlarmsList = await getAlarmsList();
+  chromeAlarmsList.length > 0
+    ? chrome.action.setBadgeText({ text: `${chromeAlarmsList.length}` })
+    : chrome.action.setBadgeText({ text: `` });
+}
+// test
+document.getElementById("test").addEventListener("click", () => {
+  const alarmName = setAlarmName("test");
+  chrome.alarms.create(alarmName, {
+    when: Date.now(), // run without delay
+  });
+});
 // alarm countdown
-document.getElementById("setAlarm").addEventListener("click", setAlarm);
-async function setAlarm(e) {
+document.getElementById("setAlarm").addEventListener("click", async (e) => {
   e.preventDefault();
   countMinutesValue = +countMinutes.value;
   localStorage.setItem("countMinutesValue", countMinutesValue);
@@ -118,24 +161,10 @@ async function setAlarm(e) {
     delayInMinutes: countMinutesValue, //duration of time in minutes after which the onAlarm event should fire.
   });
   addAllAlarmsToHTML();
-}
-// alarm clear
-function alarmClear(e) {
-  const AlarmTimeString = e.currentTarget.id;
-  chrome.alarms.clear(AlarmTimeString);
-  document.getElementById(AlarmTimeString).remove();
-}
-// test
-document.getElementById("test").addEventListener("click", () => {
-  const alarmName = setAlarmName("test");
-  chrome.alarms.create(alarmName, {
-    when: Date.now(), // run without delay
-  });
 });
 // setTimeAlarm
 var certainTime;
-document.getElementById("setTimeAlarm").addEventListener("click", setTimeAlarm);
-function setTimeAlarm(e) {
+document.getElementById("setTimeAlarm").addEventListener("click", async (e) => {
   e.preventDefault();
 
   certainTime = document.getElementById("certainTime").value;
@@ -144,36 +173,62 @@ function setTimeAlarm(e) {
   dt.setMinutes(certainTime.split(":")[1]);
   dt.setSeconds(0);
   const alarmName = setAlarmName(certainTime);
-  chrome.alarms.create(alarmName, {
-    when: dt.getTime(), //Time at which the alarm should fire, in milliseconds past the epoch (e.g. Date.now() + n).
-  });
+  try {
+    chrome.alarms.create(alarmName, {
+      when: dt.getTime(), //Time at which the alarm should fire, in milliseconds past the epoch (e.g. Date.now() + n).
+    });
+  } catch {}
   addAllAlarmsToHTML();
-}
+});
 // setPeriodAlarm
 document
   .getElementById("setPeriodAlarm")
-  .addEventListener("click", setPeriodAlarm);
-function setPeriodAlarm(e) {
-  e.preventDefault();
-  countPeriodValue = +countPeriod.value;
-  timesPeriodValue = +timesPeriod.value;
-  const alarmName = setAlarmName(
-    `every ${countPeriodValue} min`,
-    timesPeriodValue
-  );
-  chrome.alarms.create(alarmName, {
-    delayInMinutes: countPeriodValue,
-    periodInMinutes: countPeriodValue, //If set, the onAlarm event should fire every periodInMinutes minutes
+  .addEventListener("click", async (e) => {
+    e.preventDefault();
+    countPeriodValue = +countPeriod.value;
+    timesPeriodValue = +timesPeriod.value;
+    const alarmName = setAlarmName(
+      `every ${countPeriodValue} min`,
+      timesPeriodValue
+    );
+    chrome.alarms.create(alarmName, {
+      delayInMinutes: countPeriodValue,
+      periodInMinutes: countPeriodValue, //If set, the onAlarm event should fire every periodInMinutes minutes
+    });
+    addAllAlarmsToHTML();
+    localStorage.setItem("countPeriodValue", countPeriodValue);
+    localStorage.setItem("timesPeriodValue", timesPeriodValue);
   });
-  addAllAlarmsToHTML();
-  localStorage.setItem("countPeriodValue", countPeriodValue);
-  localStorage.setItem("timesPeriodValue", timesPeriodValue);
-}
 // save alarms to alarmsList
 async function addAllAlarmsToHTML() {
   alarmsList.innerHTML = "";
+  const chromeAlarmsList = await getAlarmsList();
 
-  const chromeAlarmsList = await chrome.alarms
+  for (let alarm of chromeAlarmsList) {
+    const alarmName = new URLSearchParams(alarm.name);
+    const alarmTime = new Date(alarm.scheduledTime);
+    const div = document.createElement("div");
+    if (alarm.periodInMinutes) {
+      div.textContent = `${alarmTime.toLocaleTimeString("en-GB")} ${
+        alarm.periodInMinutes
+      }/${alarmName.get("countTimes")} ${alarmName.get("description")}`;
+    } else {
+      div.textContent = `${alarmTime.toLocaleTimeString(
+        "en-GB"
+      )} ${alarmName.get("description")}`;
+    }
+
+    div.id = alarm.name;
+    div.addEventListener("click", alarmClear);
+    alarmsList.appendChild(div);
+  }
+  chromeAlarmsList.length > 0
+    ? chrome.action.setBadgeText({ text: `${chromeAlarmsList.length}` })
+    : chrome.action.setBadgeText({ text: `` });
+}
+// get alarm list
+async function getAlarmsList() {
+  return await chrome.alarms
     .getAll()
     .then((result) => {
       console.log("chromeAlarmsList :>> ", result);
@@ -182,20 +237,4 @@ async function addAllAlarmsToHTML() {
     .catch((err) => {
       console.log("err :>> ", err);
     });
-  for (let alarm of chromeAlarmsList) {
-    const alarmName = new URLSearchParams(alarm.name);
-    const alarmTime = new Date(alarm.scheduledTime);
-    const div = document.createElement("div");
-    if (alarm.periodInMinutes) {
-      div.textContent = `${alarmTime.toLocaleTimeString("en-GB")} and every ${
-        alarm.periodInMinutes
-      } min, ${alarmName.get("countTimes")} times left`;
-    } else {
-      div.textContent = `${alarmTime.toLocaleTimeString("en-GB")}`;
-    }
-
-    div.id = alarm.name;
-    div.addEventListener("click", alarmClear);
-    alarmsList.appendChild(div);
-  }
 }

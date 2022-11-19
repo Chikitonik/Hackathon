@@ -7,6 +7,7 @@ chrome.alarms.onAlarm.addListener((a) => {
   )}&duration=${params.get("duration")}`;
 
   playSound(url);
+  // change count alarm times
   let countTimes = params.get("countTimes");
   if (countTimes == 1) {
     chrome.alarms.clear(a.name);
@@ -19,13 +20,23 @@ chrome.alarms.onAlarm.addListener((a) => {
     });
     chrome.alarms.clear(a.name);
   }
+  // setBadgeText as count alarms
+  chrome.alarms
+    .getAll()
+    .then((result) => {
+      console.log("chromeAlarmsList :>> ", result);
+      result.length > 0
+        ? chrome.action.setBadgeText({ text: `${result.length}` })
+        : chrome.action.setBadgeText({ text: `` });
+    })
+    .catch((err) => {
+      console.log("err :>> ", err);
+    });
 });
 
 function playSound(url) {
   // this will play success.wav at half the volume and close the popup after a second
   //   url += "?volume=0.5&src=sounds\\ship.mp3&duration=1000";
-
-  // console.log("AlarmName :>> ", AlarmName);
 
   chrome.windows.create({
     type: "popup",

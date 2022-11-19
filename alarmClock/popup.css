@@ -18,8 +18,38 @@ body {
 #settingsCaption {
   text-align: center;
   cursor: pointer;
-  color: grey;
+  color: #808080;
 }
 #countPeriod, #timesPeriod {
   width: 30px;
+}
+input {
+  margin-bottom: 2px;
+}
+details {
+  margin-bottom: 10px;
+}
+#certainTime {
+  margin-left: 5px;
+  width: 76px;
+}
+#countMinutes {
+  margin-left: 5px;
+
+}
+#setAlarm, #setTimeAlarm {
+  margin-left: 5px;
+width: 64px;
+}
+#alarmDescription {
+  width: 198px;
+}
+#volume {
+  margin-left: 10px;
+}
+#duration {
+  margin-left: 4px;
+}
+#sound {
+  margin-left: 17px;
 }
