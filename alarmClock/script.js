@@ -1,5 +1,3 @@
-// document.addEventListener("DOMContentLoaded", function () {})
-
 chrome.action.setBadgeBackgroundColor({ color: "#b5daba" });
 //// only addEventListener works in extension (not in html) ////
 const alarmsList = document.getElementById("alarmsList");
