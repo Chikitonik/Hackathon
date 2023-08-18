@@ -71,6 +71,7 @@ linksList.innerHTML = `
     <ul class="dropdown-menu">
       <li><a target="blank" href="http://portal/view_doc.html"><span>Портал</span></a></li>
       <li><a target="blank" href="http://portal/view_doc.html?mode=doc_type&object_id=5916115003867543517&doc_id=&tab=1"><span>Портал (поиск по ФИО)</span></a></li>
+      <li><a target="blank" href="https://lks.corp"><span>Личн каб сотрудника</span></a></li>
       <li><a target="blank" href="http://ws.armtek.ru"><span>Веб-сервис</span></a></li>
       <li><a target="blank" href="https://diadoc.kontur.ru"><span>Диадок</span></a></li>
       <li><a target="blank" href="https://pay.raif.ru/account/#/auth"><span>Райффайзен</span></a></li>
