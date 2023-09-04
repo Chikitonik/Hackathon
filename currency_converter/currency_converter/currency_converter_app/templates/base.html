@@ -11,99 +11,108 @@
     />
   </head>
   <body>
-    <div class="container mt-3 ml-2">
-      <h1 class="text-center">Currency Converter</h1>
-      <form method="post" id="currencyConverterForm" onsubmit="redirectToURL()">
-        {% csrf_token %}
-        <div class="row">
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="amount">Amount:</label>
-              <input
-                type="number"
-                id="amount"
-                name="amount"
-                class="form-control"
-                value="100"
-                required
-              />
+    <h1 class="text-center">Currency Converter</h1>
+    <div class="row p-3">
+      <div class="col-3">
+        <form
+          method="post"
+          id="currencyConverterForm"
+          onsubmit="redirectToURL()"
+        >
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input
+                  type="number"
+                  id="amount"
+                  name="amount"
+                  class="form-control"
+                  value="{% if amount %}{{ amount }}{% else %}100{% endif %}"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="percent">Percentage:</label>
+                <input
+                  type="number"
+                  id="percent"
+                  name="percent"
+                  step="0.1"
+                  class="form-control"
+                  value="0"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="percent">Percentage:</label>
-              <input
-                type="number"
-                id="percent"
-                name="percent"
-                step="0.1"
-                class="form-control"
-                value="0"
-                required
-              />
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="from_currency">From Currency:</label>
+                <select
+                  id="from_currency"
+                  name="from_currency"
+                  class="form-control"
+                  required
+                >
+                  {% for currency in currencies %}
+                  <option value="{{ currency.currency_code }}">
+                    {{ currency.currency_code }} - {{ currency.currency_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label for="to_currency">To Currency:</label>
+                <select
+                  id="to_currency"
+                  name="to_currency"
+                  class="form-control"
+                  required
+                >
+                  {% for currency in currencies %}
+                  <option value="{{ currency.currency_code }}">
+                    {{ currency.currency_code }} - {{ currency.currency_name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="from_currency">From Currency:</label>
-              <select
-                id="from_currency"
-                name="from_currency"
-                class="form-control"
-                required
-              >
-                {% for currency in currencies %}
-                <option value="{{ currency.currency_code }}">
-                  {{ currency.currency_code }} - {{ currency.currency_name }}
-                </option>
-                {% endfor %}
-              </select>
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <label for="period">Choose Period:</label>
+                <select id="period" name="period" class="form-control" required>
+                  <option value="1m">1 Month</option>
+                  <option value="1y">1 Year</option>
+                  <option value="3y">3 Years</option>
+                  <option value="5y">5 Years</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <label> Run:</label>
+              <button type="submit" class="btn btn-primary btn-block">
+                Make plot
+              </button>
             </div>
           </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="to_currency">To Currency:</label>
-              <select
-                id="to_currency"
-                name="to_currency"
-                class="form-control"
-                required
-              >
-                {% for currency in currencies %}
-                <option value="{{ currency.currency_code }}">
-                  {{ currency.currency_code }} - {{ currency.currency_name }}
-                </option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-2">
-            <div class="form-group">
-              <label for="period">Choose Period:</label>
-              <select id="period" name="period" class="form-control" required>
-                <option value="1m">1 Month</option>
-                <option value="1y">1 Year</option>
-                <option value="3y">3 Years</option>
-                <option value="5y">5 Years</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <label> Run:</label>
-            <button type="submit" class="btn btn-primary btn-block">
-              Make plot
-            </button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
+      <div class="col-9">
+        {% block content %}
+        <!-- This is where the content from child templates will be inserted -->
+        {% endblock content %}
+      </div>
     </div>
-    {% block content %}
-    <!-- This is where the content from child templates will be inserted -->
-    {% endblock content %}
+
     <!-- Add Bootstrap JS and jQuery Links -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

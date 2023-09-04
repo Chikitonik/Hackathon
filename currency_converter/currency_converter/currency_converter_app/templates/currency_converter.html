@@ -1,10 +1,30 @@
 {% extends "base.html" %} {% block content %} {% load static %}
-<!-- Load the static tag library -->
-<!-- Display the image of the plot if available -->
-{% if plot_image_path %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <div>
-  <h2>Exchange Rate Plot:</h2>
-  <img src="{% static plot_image_path %}" alt="Currency Exchange Rate Plot" />
-  <!-- <img src="{% static 'placeholder.jpg' %}" alt="Empty Image" /> -->
+  <canvas id="exchangeRateChart"></canvas>
 </div>
-{% endif %} {% endblock content %}
+
+<script type="text/javascript">
+
+
+  new Chart("exchangeRateChart", {
+    type: "line",
+    data: {
+      labels: {{rate_dates|safe}},
+      datasets: [
+        {
+          label: "Converted {{amount}} from {{from_currency}} to {{to_currency}}",
+          data: {{rate_values|safe}},
+          borderColor: "rgba(75, 192, 192, 1)",
+          fill: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+    },
+  });
+</script>
+
+{% endblock content %}
