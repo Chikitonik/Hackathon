@@ -1,0 +1,16 @@
+Django app that shows the chart of given amount of currency in another currency
+
+Plan:
+view
+- input a sum
+- input a percent
+- input a currency from
+- input a currency to
+- choose a period (1m, 1y, 5y, 10y)
+
+- show a chart
+
+database local postgre (it is needed according to a hackathon rules)
+- list of currencies
+
+use forex-python for rate

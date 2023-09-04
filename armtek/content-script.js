@@ -1,57 +1,6 @@
-// document.body.style.backgroundColor = "orange";
 const ArmtekLeftNavbarList = document.getElementsByClassName("navbar-nav");
-// aaa[0].style.backgroundColor = "orange";
 const ERPlist = document.createElement("li");
 const linksList = document.createElement("li");
-// const ERPpannel = document.createElement("div");
-// var ClientLine = "";
-// var kunnr_ag = "not_found";
-// var kunnr_rg = "not_found";
-// const scriptElements = document.querySelectorAll(
-//   'script[type="text/javascript"]'
-// );
-
-// try {
-//   ClientLine = document.getElementsByClassName("bg_client_line");
-// } catch (error) {}
-// // kunnr_ag
-// try {
-//   kunnr_ag = document
-//     .getElementsByClassName("select_KUNNR_AG")[0]
-//     .getAttribute("kunnr_ag");
-// } catch (error) {}
-// if (kunnr_ag === "not_found") {
-//   try {
-//     scriptElements.forEach((scriptElement) => {
-//       const scriptContent = scriptElement.textContent;
-//       const clientIdRegex = /clientId\s*=\s*['"]([^'"]+)['"]/;
-//       const match = scriptContent.match(clientIdRegex);
-
-//       if (match) {
-//         kunnr_ag = match[1];
-//       }
-//     });
-//   } catch (error) {}
-//   if (kunnr_ag === "not_found") {
-//     try {
-//       const selectElements = document.querySelectorAll(".select_PARNR");
-
-//       selectElements.forEach((selectElement) => {
-//         const spanElement = selectElement.querySelector("span");
-//         try {
-//           kunnr_ag = spanElement.getAttribute("data-client");
-//         } catch (error) {}
-//       });
-//     } catch (error) {}
-//   }
-// }
-// // kunnr_rg
-// try {
-//   // does not work
-//   // kunnr_rg = document
-//   //   .getElementsByClassName("select_KUNNR_RG")[0]
-//   //   .getAttribute("kunnr_rg");
-// } catch (error) {}
 
 ERPlist.innerHTML = `
   <li id="ERP"><a data-toggle="dropdown" class="dropdown-toggle" target="_self" href="#" title="ERP">
@@ -72,6 +21,7 @@ linksList.innerHTML = `
       <li><a target="blank" href="http://portal/view_doc.html"><span>Портал</span></a></li>
       <li><a target="blank" href="http://portal/view_doc.html?mode=doc_type&object_id=5916115003867543517&doc_id=&tab=1"><span>Портал (поиск по ФИО)</span></a></li>
       <li><a target="blank" href="https://lks.corp"><span>Личн каб сотрудника</span></a></li>
+      <li><a target="blank" href="http://armtek.ru"><span>Розничный магазин</span></a></li>
       <li><a target="blank" href="http://ws.armtek.ru"><span>Веб-сервис</span></a></li>
       <li><a target="blank" href="https://diadoc.kontur.ru"><span>Диадок</span></a></li>
       <li><a target="blank" href="https://pay.raif.ru/account/#/auth"><span>Райффайзен</span></a></li>
@@ -83,6 +33,8 @@ linksList.innerHTML = `
       <li><a target="blank" href="https://etp.armtek.by/monitors/V2?monitorid=71"><span>Клиентский монитор</span></a></li>
       <li class="divider"></li>
       <li><a target="blank" href="http://q-store.uk.armtek.local"><span>Тестовый ЭТП</span></a></li>
+      <li><a target="blank" href="https://xwz.armtek.ru"><span>Тестовый розница на EUQ</span></a></li>
+      <li><a target="blank" href="https://betashop.armtek.ru"><span>Тестовый розница на EUP</span></a></li>
       <li><a target="blank" href="http://crmtest.uk.armtek.local/ru/auth/login"><span>Тестовый РММ</span></a></li>
       <li><a target="blank" href="http://ws-test.uk.armtek.local"><span>Тестовый веб-сервис</span></a></li>
 

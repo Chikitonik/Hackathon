@@ -1,0 +1,10 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+<!-- Load the static tag library -->
+<!-- Display the image of the plot if available -->
+{% if plot_image_path %}
+<div>
+  <h2>Exchange Rate Plot:</h2>
+  <img src="{% static plot_image_path %}" alt="Currency Exchange Rate Plot" />
+  <!-- <img src="{% static 'placeholder.jpg' %}" alt="Empty Image" /> -->
+</div>
+{% endif %} {% endblock content %}
