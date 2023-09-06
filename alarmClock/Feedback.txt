@@ -1,0 +1,9 @@
+Hello Roman Congratulation on your Hackaton project. I liked that you combined the learned on class and whent further 
+ creating a chrome extension. Then when they accept it please let me know so i can complete see it working.
+If then they will se the alarm page i will recommend to add some css to create an entire page with a title and 
+more user friendly to understand what every part of your alarm is doing. Could be with some pop ups messages or 
+using legends. About your Javascrypt very well done using DOM and forms manipulation and event listener. 
+
+Keep going with the amazing job you are doing.
+
+

@@ -1,3 +1,5 @@
+// document.addEventListener("DOMContentLoaded", function () {})
+
 chrome.action.setBadgeBackgroundColor({ color: "#b5daba" });
 //// only addEventListener works in extension (not in html) ////
 const alarmsList = document.getElementById("alarmsList");
@@ -60,6 +62,9 @@ alarmDescription.addEventListener("keydown", (event) => {
 // show alert in
 const showCountMinutesForm = document.getElementById("showCountMinutesForm");
 const showCountMinutes = document.getElementById("showCountMinutes");
+
+if (localStorage.getItem("showCountMinutesCheck") === null)
+  localStorage.setItem("showCountMinutesCheck", "true");
 try {
   showCountMinutes.checked =
     localStorage.getItem("showCountMinutesCheck") === "true";
@@ -118,17 +123,62 @@ function showAlarmDescriptionCheck() {
     showAlarmDescription.checked
   );
 }
+// isPlaySound
+const isPlaySound = document.getElementById("isPlaySound");
+let isPlaySoundCheck = localStorage.getItem("isPlaySoundCheck");
+if (isPlaySoundCheck === null) {
+  isPlaySoundCheck = "true";
+  isPlaySound.checked = isPlaySoundCheck === "true";
+} else isPlaySound.checked = isPlaySoundCheck === "true";
+isPlaySound.addEventListener("change", () => {
+  // if notifications off, then not allow to off the sound too
+  if (!isShowNotifications.checked) {
+    isPlaySound.checked = true;
+  } else {
+    isPlaySoundCheck = isPlaySound.checked;
+    localStorage.setItem("isPlaySoundCheck", isPlaySoundCheck);
+  }
+});
+// isShowNotifications
+const isShowNotifications = document.getElementById("isShowNotifications");
+let isShowNotificationsCheck = localStorage.getItem("isShowNotificationsCheck");
+isShowNotifications.checked = isShowNotificationsCheck;
+if (isShowNotificationsCheck === null) {
+  isShowNotificationsCheck = "true";
+  isShowNotifications.checked = isShowNotificationsCheck === "true";
+} else isShowNotifications.checked = isShowNotificationsCheck === "true";
+isShowNotifications.addEventListener("change", () => {
+  // if sound off, then not allow to off the notifications too
+  if (!isPlaySound.checked) {
+    isShowNotifications.checked = true;
+  } else {
+    isShowNotificationsCheck = isShowNotifications.checked;
+    localStorage.setItem("isShowNotificationsCheck", isShowNotificationsCheck);
+  }
+});
+// clear all alarms and saved data
+document.getElementById("clearAllData").addEventListener("click", (e) => {
+  e.preventDefault();
+  alarmsList.innerHTML = "";
+  chrome.alarms.clearAll();
+  localStorage.clear();
+  localStorage.setItem("showCountMinutesCheck", true);
+  localStorage.setItem("isPlaySoundCheck", true);
+  localStorage.setItem("isShowNotificationsCheck", true);
+  location.reload();
+});
 // #endregion settings
 // alarm name with data
-function setAlarmName(AlarmTimeString, countTimes = 1) {
+function setAlarmName(countTimes = 1) {
   const alarmName = new URLSearchParams();
-  alarmName.append("time", new Date());
+  alarmName.append("time", new Date().getTime());
   alarmName.append("volume", volumeValue);
   alarmName.append("src", `sounds\\${soundSelected}`);
   alarmName.append("duration", durationValue);
   alarmName.append("countTimes", countTimes);
   alarmName.append("description", alarmDescription.value);
-  // console.log("alarmName.toString() :>> ", alarmName.toString());
+  alarmName.append("isNotify", isShowNotifications.checked);
+  alarmName.append("isSound", isPlaySound.checked);
   return alarmName.toString();
 }
 // alarm clear
@@ -143,54 +193,56 @@ async function alarmClear(e) {
 }
 // test
 document.getElementById("test").addEventListener("click", () => {
-  const alarmName = setAlarmName("test");
+  const alarmName = setAlarmName();
   chrome.alarms.create(alarmName, {
     when: Date.now(), // run without delay
   });
 });
 // alarm countdown
-document.getElementById("setAlarm").addEventListener("click", async (e) => {
-  e.preventDefault();
-  countMinutesValue = +countMinutes.value;
-  localStorage.setItem("countMinutesValue", countMinutesValue);
-  const AlarmTimeString = new Date(
-    new Date().getTime() + countMinutesValue * 60000
-  ).toLocaleTimeString("en-US", { hour12: false });
-  const alarmName = setAlarmName(AlarmTimeString);
-  chrome.alarms.create(alarmName, {
-    delayInMinutes: countMinutesValue, //duration of time in minutes after which the onAlarm event should fire.
-  });
-  addAllAlarmsToHTML();
-});
+document.getElementById("setAlarm").addEventListener(
+  "click",
+  // async
+  (e) => {
+    e.preventDefault();
+    countMinutesValue = +countMinutes.value;
+    localStorage.setItem("countMinutesValue", countMinutesValue);
+    const alarmName = setAlarmName();
+    chrome.alarms.create(alarmName, {
+      delayInMinutes: countMinutesValue, //duration of time in minutes after which the onAlarm event should fire.
+    });
+    addAllAlarmsToHTML();
+  }
+);
 // setTimeAlarm
 var certainTime;
-document.getElementById("setTimeAlarm").addEventListener("click", async (e) => {
-  e.preventDefault();
-
-  certainTime = document.getElementById("certainTime").value;
-  let dt = new Date();
-  dt.setHours(certainTime.split(":")[0]);
-  dt.setMinutes(certainTime.split(":")[1]);
-  dt.setSeconds(0);
-  const alarmName = setAlarmName(certainTime);
-  try {
-    chrome.alarms.create(alarmName, {
-      when: dt.getTime(), //Time at which the alarm should fire, in milliseconds past the epoch (e.g. Date.now() + n).
-    });
-  } catch {}
-  addAllAlarmsToHTML();
-});
+document.getElementById("setTimeAlarm").addEventListener(
+  "click",
+  // async
+  (e) => {
+    e.preventDefault();
+    certainTime = document.getElementById("certainTime").value;
+    let dt = new Date();
+    dt.setHours(certainTime.split(":")[0]);
+    dt.setMinutes(certainTime.split(":")[1]);
+    dt.setSeconds(0);
+    const alarmName = setAlarmName();
+    try {
+      chrome.alarms.create(alarmName, {
+        when: dt.getTime(), //Time at which the alarm should fire, in milliseconds past the epoch (e.g. Date.now() + n).
+      });
+    } catch {}
+    addAllAlarmsToHTML();
+  }
+);
 // setPeriodAlarm
-document
-  .getElementById("setPeriodAlarm")
-  .addEventListener("click", async (e) => {
+document.getElementById("setPeriodAlarm").addEventListener(
+  "click",
+  // async
+  (e) => {
     e.preventDefault();
     countPeriodValue = +countPeriod.value;
     timesPeriodValue = +timesPeriod.value;
-    const alarmName = setAlarmName(
-      `every ${countPeriodValue} min`,
-      timesPeriodValue
-    );
+    const alarmName = setAlarmName(timesPeriodValue);
     chrome.alarms.create(alarmName, {
       delayInMinutes: countPeriodValue,
       periodInMinutes: countPeriodValue, //If set, the onAlarm event should fire every periodInMinutes minutes
@@ -198,7 +250,8 @@ document
     addAllAlarmsToHTML();
     localStorage.setItem("countPeriodValue", countPeriodValue);
     localStorage.setItem("timesPeriodValue", timesPeriodValue);
-  });
+  }
+);
 // save alarms to alarmsList
 async function addAllAlarmsToHTML() {
   alarmsList.innerHTML = "";
