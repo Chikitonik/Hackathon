@@ -1,10 +1,10 @@
 {
-  "name": "Lightweight Alarm clock ",
+  "name": "alarmClock",
   "version": "1.0.0",
-  "description": "Alarm clock, countdown, interval timer",
+  "description": "Alarm clock",
   "manifest_version": 3,
   "author": "Roman",
-  "permissions": ["alarms","notifications"],
+  "permissions": ["alarms"],
   "background": {
     "service_worker": "background.js"
   },
