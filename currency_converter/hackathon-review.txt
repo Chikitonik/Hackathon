@@ -1,0 +1,33 @@
+Hi, here you can the save of the user just once there is no need anytime we change a filed to call the save funcition:
+your code:
+def buy_one_card(request, card_id, user_id):
+    card = get_object_or_404(Card, pk=card_id)
+    user = get_object_or_404(User, pk=user_id)
+
+    if user.amount_of_money >= card.price:
+        card.current_owner = user
+        card.save()
+        user.points += card.xp_points
+        user.save()
+        user.amount_of_money -= card.price
+        user.save()
+
+        # return redirect('homepage')
+    else:
+        return render(request, 'not_enough_money.html')
+improvment:
+def buy_one_card(request, card_id, user_id):
+    card = get_object_or_404(Card, pk=card_id)
+    user = get_object_or_404(User, pk=user_id)
+
+    if user.amount_of_money >= card.price:
+        card.current_owner = user
+        card.save()
+        user.points += card.xp_points
+        # user.save() --> there is no need for this command
+        user.amount_of_money -= card.price
+        user.save()
+
+        # return redirect('homepage')
+    else:
+        return render(request, 'not_enough_money.html')
